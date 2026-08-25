@@ -4,22 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WYRE — Everything. Connected. Locally.</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23EC3013'/%3E%3Cpath d='M 18 26 L 30 26 L 40 62 L 50 38 L 60 62 L 70 26 L 82 26 L 66 74 L 55 74 L 50 58 L 45 74 L 34 74 Z' fill='%23F3F2F2'/%3E%3C/svg%3E">
 <meta name="description" content="Local-first automation for homes, buildings, and industrial facilities. No cloud. No lock-in. Open protocols only.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0E1F33;
-    --bg-raised: #132844;
-    --grid-line: rgba(232, 238, 242, 0.06);
-    --ink: #E8EEF2;
-    --ink-dim: #9FB2C2;
-    --ink-faint: #5D7186;
-    --copper: #C17D45;
-    --copper-bright: #D99456;
-    --signal: #4FA98A;
-    --hairline: rgba(232, 238, 242, 0.14);
+    --bg: #201E1D;
+    --bg-raised: #2B2826;
+    --grid-line: rgba(243, 242, 242, 0.045);
+    --ink: #F3F2F2;
+    --ink-dim: #B7B2AE;
+    --ink-faint: #6E6864;
+    --copper: #EC3013;
+    --copper-bright: #FF5B3D;
+    --signal: #EC3013;
+    --hairline: rgba(243, 242, 242, 0.14);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -70,7 +71,7 @@
     top: 0;
     z-index: 50;
     backdrop-filter: blur(10px);
-    background: rgba(14, 31, 51, 0.82);
+    background: rgba(32, 30, 29, 0.82);
     border-bottom: 1px solid var(--hairline);
   }
   .header-inner {
@@ -82,13 +83,13 @@
     justify-content: space-between;
   }
   .logo {
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 600;
-    font-size: 20px;
-    letter-spacing: 0.08em;
+    font-family: 'Archivo', 'Helvetica', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    letter-spacing: -0.035em;
     color: var(--ink);
   }
-  .logo .dot { color: var(--copper-bright); }
+  .logo .accent-letter { color: var(--copper); }
   .header-cta {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 13px;
@@ -133,7 +134,7 @@
     font-size: 14px;
     letter-spacing: 0.03em;
     background: var(--copper);
-    color: #0E1F33;
+    color: #201E1D;
     font-weight: 600;
     padding: 13px 22px;
     border-radius: 3px;
@@ -307,7 +308,7 @@
     border-bottom: 1px solid var(--hairline);
   }
   .spec-row:last-child { border-bottom: none; }
-  .spec-row:nth-child(even) { background: rgba(232, 238, 242, 0.02); }
+  .spec-row:nth-child(even) { background: rgba(243, 242, 242, 0.02); }
   .spec-param, .spec-value {
     padding: 18px 24px;
     font-family: 'IBM Plex Mono', monospace;
@@ -358,7 +359,7 @@
 
 <header>
   <div class="header-inner">
-    <div class="logo">WYRE<span class="dot">.</span></div>
+    <div class="logo">WY<span class="accent-letter">R</span>E</div>
     <a class="header-cta" href="#contact">CONTACT@WYRE.CO.IN</a>
   </div>
 </header>
