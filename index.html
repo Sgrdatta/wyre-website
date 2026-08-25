@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WYRE — Everything. Connected. Locally.</title>
+<meta name="description" content="Local-first automation for homes, buildings, and industrial facilities. No cloud. No lock-in. Open protocols only.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E1F33;
+    --bg-raised: #132844;
+    --grid-line: rgba(232, 238, 242, 0.06);
+    --ink: #E8EEF2;
+    --ink-dim: #9FB2C2;
+    --ink-faint: #5D7186;
+    --copper: #C17D45;
+    --copper-bright: #D99456;
+    --signal: #4FA98A;
+    --hairline: rgba(232, 238, 242, 0.14);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 40px 40px;
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--copper-bright); outline-offset: 3px; }
+
+  .mono {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--copper-bright);
+    font-weight: 500;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ---------- HEADER ---------- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    background: rgba(14, 31, 51, 0.82);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .header-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+  .logo .dot { color: var(--copper-bright); }
+  .header-cta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
+    text-decoration: none;
+    border: 1px solid var(--hairline);
+    padding: 8px 16px;
+    border-radius: 3px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .header-cta:hover { border-color: var(--copper); color: var(--ink); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 96px 0 64px;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .hero h1 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 700;
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 18px 0 20px;
+  }
+  .hero h1 .accent { color: var(--copper-bright); }
+  .hero p.sub {
+    font-size: 18px;
+    color: var(--ink-dim);
+    max-width: 46ch;
+    margin-bottom: 32px;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 0.03em;
+    background: var(--copper);
+    color: #0E1F33;
+    font-weight: 600;
+    padding: 13px 22px;
+    border-radius: 3px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--copper-bright); transform: translateY(-1px); }
+  .btn-secondary {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 0.03em;
+    color: var(--ink-dim);
+    padding: 13px 22px;
+    border-radius: 3px;
+    border: 1px solid var(--hairline);
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--ink-faint); color: var(--ink); }
+
+  /* ---------- SCHEMATIC SVG ---------- */
+  .schematic { width: 100%; height: auto; }
+  .schematic .node-box {
+    fill: var(--bg-raised);
+    stroke: var(--hairline);
+    stroke-width: 1;
+  }
+  .schematic .node-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    fill: var(--ink-dim);
+  }
+  .schematic .hub-box {
+    fill: var(--bg-raised);
+    stroke: var(--copper);
+    stroke-width: 1.4;
+  }
+  .schematic .hub-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    fill: var(--ink);
+  }
+  .schematic .trace {
+    fill: none;
+    stroke: var(--ink-faint);
+    stroke-width: 1.4;
+    stroke-dasharray: 240;
+    stroke-dashoffset: 240;
+    animation: draw 1.6s ease-out forwards;
+  }
+  .schematic .trace.t2 { animation-delay: 0.15s; }
+  .schematic .trace.t3 { animation-delay: 0.3s; }
+  .schematic .pulse {
+    fill: var(--signal);
+    opacity: 0;
+    animation: pulse 2.4s ease-in-out 1.8s infinite;
+  }
+  .schematic .pulse.p2 { animation-delay: 2.1s; }
+  .schematic .pulse.p3 { animation-delay: 2.4s; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes pulse {
+    0% { opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section { padding: 72px 0; border-top: 1px solid var(--hairline); }
+  .section-head { margin-bottom: 40px; }
+  .section-head h2 {
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700;
+    margin-top: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- SEGMENTS ---------- */
+  .segments {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .segment-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    padding: 26px 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .segment-card:hover { border-color: var(--copper); transform: translateY(-2px); }
+  .segment-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    display: block;
+    margin-bottom: 14px;
+  }
+  .segment-card h3 {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .segment-card h3 .wyre-part { color: var(--copper-bright); }
+  .segment-card p {
+    font-size: 14.5px;
+    color: var(--ink-dim);
+  }
+
+  /* ---------- SCALE BAR ---------- */
+  .scale-bar {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .scale-stop {
+    flex: 1;
+    text-align: center;
+    padding: 20px 8px;
+    border-right: 1px dashed var(--hairline);
+    position: relative;
+  }
+  .scale-stop:last-child { border-right: none; }
+  .scale-stop::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 50%;
+    width: 1px; height: 8px;
+    background: var(--copper);
+    transform: translateX(-50%);
+  }
+  .scale-stop .scale-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  .scale-stop:first-child .scale-label,
+  .scale-stop:last-child .scale-label { color: var(--copper-bright); font-weight: 600; }
+  .scale-caption {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-top: 12px;
+    text-align: center;
+    letter-spacing: 0.03em;
+  }
+  @media (max-width: 700px) {
+    .scale-bar { flex-wrap: wrap; }
+    .scale-stop { flex: 1 1 33%; border-bottom: 1px dashed var(--hairline); }
+  }
+
+  /* ---------- SPEC SHEET ---------- */
+  .spec-sheet {
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .spec-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-row:nth-child(even) { background: rgba(232, 238, 242, 0.02); }
+  .spec-param, .spec-value {
+    padding: 18px 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13.5px;
+  }
+  .spec-param { color: var(--ink-dim); letter-spacing: 0.02em; }
+  .spec-value { color: var(--ink); font-weight: 500; }
+  .spec-value .ok { color: var(--signal); }
+  @media (max-width: 640px) {
+    .spec-row { grid-template-columns: 1fr; }
+    .spec-value { border-top: 1px dashed var(--hairline); }
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact-inner { text-align: center; padding: 88px 0; }
+  .contact-inner h2 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    margin: 16px 0 14px;
+  }
+  .contact-inner p { color: var(--ink-dim); font-size: 16px; margin-bottom: 32px; }
+  .contact-links { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  footer {
+    border-top: 1px solid var(--hairline);
+    padding: 28px 0;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .schematic-wrap { order: -1; }
+    .segments { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">WYRE<span class="dot">.</span></div>
+    <a class="header-cta" href="#contact">CONTACT@WYRE.CO.IN</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero" style="border-top:none; padding-top: 64px;">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">// LOCAL-FIRST AUTOMATION</span>
+        <h1>Everything.<br>Connected.<br><span class="accent">Locally.</span></h1>
+        <p class="sub">WYRE designs and installs networks, security systems, and automation — from a single flat to bungalows, resorts, commercial buildings, and industrial plants. Everything runs on open protocols, on-premise. No cloud dependency. No vendor lock-in.</p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="mailto:contact@wyre.co.in">Start a conversation</a>
+          <a class="btn-secondary" href="#spec">Why local-first</a>
+        </div>
+      </div>
+
+      <div class="schematic-wrap">
+        <svg class="schematic" viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schematic diagram showing WYRE Home, Build, and Plant connected to a central WYRE hub">
+          <!-- traces -->
+          <path class="trace t1" d="M 90 60 L 90 140 Q 90 160 110 160 L 170 160" />
+          <path class="trace t2" d="M 90 170 L 170 170" />
+          <path class="trace t3" d="M 90 280 L 90 200 Q 90 180 110 180 L 170 180" />
+
+          <!-- pulses traveling along traces -->
+          <circle class="pulse p1" r="3.2" cx="90" cy="100" />
+          <circle class="pulse p2" r="3.2" cx="130" cy="170" />
+          <circle class="pulse p3" r="3.2" cx="90" cy="240" />
+
+          <!-- HOME node -->
+          <rect class="node-box" x="20" y="34" width="140" height="52" rx="3" />
+          <text class="node-label" x="38" y="65">HOME</text>
+
+          <!-- BUILD node -->
+          <rect class="node-box" x="20" y="144" width="140" height="52" rx="3" />
+          <text class="node-label" x="38" y="175">BUILD</text>
+
+          <!-- PLANT node -->
+          <rect class="node-box" x="20" y="254" width="140" height="52" rx="3" />
+          <text class="node-label" x="38" y="285">PLANT</text>
+
+          <!-- HUB -->
+          <rect class="hub-box" x="185" y="128" width="215" height="84" rx="3" />
+          <text class="hub-label" x="208" y="164">WYRE</text>
+          <text class="node-label" x="208" y="184">LOCAL CONTROL LAYER</text>
+
+          <!-- decorative grid ticks on hub -->
+          <line x1="185" y1="212" x2="400" y2="212" stroke="var(--hairline)" stroke-width="1" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section id="segments">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">// WHAT WE WIRE</span>
+        <h2>Networks. Security. Automation.</h2>
+      </div>
+      <div class="segments">
+        <div class="segment-card">
+          <span class="segment-tag mono">FLAT → BUNGALOW → RESORT</span>
+          <h3>WYRE <span class="wyre-part">Home</span></h3>
+          <p>Home networks, Zigbee lighting, energy monitoring, NVR &amp; security systems, video door phones, and VoIP — unified under one locally-hosted control layer.</p>
+        </div>
+        <div class="segment-card">
+          <span class="segment-tag mono">OFFICE → RETAIL → HOSPITALITY</span>
+          <h3>WYRE <span class="wyre-part">Build</span></h3>
+          <p>Structured networking, access control, surveillance, building management, and sub-circuit energy metering for commercial properties.</p>
+        </div>
+        <div class="segment-card">
+          <span class="segment-tag mono">FACTORY → WAREHOUSE → PLANT</span>
+          <h3>WYRE <span class="wyre-part">Plant</span></h3>
+          <p>Industrial networking, perimeter security, Modbus machine monitoring, and SCADA-style dashboards — open protocols, no proprietary gateways.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">// SCALE</span>
+        <h2>One flat or one plant — same architecture.</h2>
+      </div>
+      <div class="scale-bar">
+        <div class="scale-stop"><span class="scale-label">Flat</span></div>
+        <div class="scale-stop"><span class="scale-label">Bungalow</span></div>
+        <div class="scale-stop"><span class="scale-label">Resort</span></div>
+        <div class="scale-stop"><span class="scale-label">Building</span></div>
+        <div class="scale-stop"><span class="scale-label">Plant</span></div>
+      </div>
+      <p class="scale-caption">NETWORKING · SECURITY · AUTOMATION — SCOPED TO SIZE, NEVER TO A DIFFERENT PLATFORM</p>
+    </div>
+  </section>
+
+  <section id="spec">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">// SPECIFICATION</span>
+        <h2>Why local-first, by the numbers.</h2>
+      </div>
+      <div class="spec-sheet mono">
+        <div class="spec-row">
+          <div class="spec-param">CLOUD DEPENDENCY</div>
+          <div class="spec-value"><span class="ok">NONE</span> — every system runs on-premise</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-param">PROTOCOLS</div>
+          <div class="spec-value">OPEN — Zigbee, Modbus, IP, no proprietary gateways</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-param">UPTIME DURING OUTAGE</div>
+          <div class="spec-value"><span class="ok">FULL</span> — local systems keep running without internet</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-param">VENDOR LOCK-IN</div>
+          <div class="spec-value"><span class="ok">NONE</span> — every deployment is documented and portable</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-param">RECURRING FEES</div>
+          <div class="spec-value">OPTIONAL — AMC monitoring available, never required to function</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="border-bottom: 1px solid var(--hairline);">
+    <div class="wrap contact-inner">
+      <span class="eyebrow">// GET IN TOUCH</span>
+      <h2>Let's wire something together.</h2>
+      <p>Homes, buildings, or industrial facilities — tell us what you're working on.</p>
+      <div class="contact-links">
+        <a class="btn-primary" href="mailto:contact@wyre.co.in">contact@wyre.co.in</a>
+        <a class="btn-secondary" href="tel:+919916234118">+91 99162 34118</a>
+        <a class="btn-secondary" href="https://wa.me/919916234118?text=Hi%20WYRE%2C%20I%27d%20like%20to%20talk%20about%20a%20project." target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span>WYRE (a brand of Wyre Technologies LLP) · +91 99162 34118</span>
+    <span>BENGALURU, KARNATAKA, INDIA</span>
+  </div>
+</footer>
+
+</body>
+</html>
